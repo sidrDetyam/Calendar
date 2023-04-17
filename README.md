@@ -1,2 +1,2 @@
 # calendar
-Group project
+Group project for the 6 semester
