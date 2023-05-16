@@ -27,6 +27,7 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.springframework.boot:spring-boot-starter-webflux'
 	implementation 'org.flywaydb:flyway-core'
+	implementation 'org.springframework.boot:spring-boot-starter-security'
 	compileOnly 'org.projectlombok:lombok'
 	runtimeOnly 'org.postgresql:postgresql'
 	annotationProcessor 'org.projectlombok:lombok'
@@ -34,6 +35,11 @@ dependencies {
 	testImplementation 'io.projectreactor:reactor-test'
 	testImplementation 'org.testcontainers:junit-jupiter'
 	testImplementation 'org.testcontainers:postgresql'
+	testImplementation 'org.springframework.security:spring-security-test'
+	implementation group: 'io.jsonwebtoken', name: 'jjwt-api', version: '0.11.5'
+	implementation group: 'io.jsonwebtoken', name: 'jjwt-impl', version: '0.11.5'
+	implementation group: 'io.jsonwebtoken', name: 'jjwt-jackson', version: '0.11.5'
+	implementation 'org.realityforge.org.jetbrains.annotations:org.jetbrains.annotations:1.7.0'
 }
 
 dependencyManagement {

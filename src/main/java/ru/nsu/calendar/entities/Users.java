@@ -18,4 +18,13 @@ public class Users {
 
     @Column(name = "telegram_token")
     private String telegramToken;
+
+    @Column(name = "username")
+    private String username;
+
+    @Column(name = "password")
+    private String password;
+
+    @Column(name = "refresh_token")
+    private String refreshToken;
 }

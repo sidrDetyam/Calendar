@@ -4,7 +4,10 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 import ru.nsu.calendar.entities.Users;
 
+import java.util.Optional;
+
 @Repository
 public interface UsersRepository extends CrudRepository<Users, Long> {
 
+    Optional<Users> getByUsername(String username);
 }
