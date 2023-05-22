@@ -49,6 +49,4 @@ tasks.named('test') {
 
 docker {
 	name 'calendar'
-//	files jar.archivePath
-//	buildArgs(['JAR_FILE': "$jar.archiveBaseName.$jar.archiveAppendix"])
 }
