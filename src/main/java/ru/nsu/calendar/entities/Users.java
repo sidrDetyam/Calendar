@@ -5,6 +5,8 @@ import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
 
+import java.util.Set;
+
 @Getter
 @Setter
 @Entity
@@ -25,6 +27,6 @@ public class Users {
     @Column(name = "password")
     private String password;
 
-    @Column(name = "refresh_token")
-    private String refreshToken;
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private Set<JwtToken> tokens;
 }

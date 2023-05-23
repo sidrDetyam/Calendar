@@ -3,15 +3,14 @@ package ru.nsu.calendar.security;
 import io.jsonwebtoken.Claims;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.nsu.calendar.entities.JwtToken;
 import ru.nsu.calendar.entities.Users;
 import ru.nsu.calendar.repository.UsersRepository;
 import ru.nsu.calendar.security.dto.JwtLoginRequestDto;
 import ru.nsu.calendar.security.dto.JwtLoginResponseDto;
 import ru.nsu.calendar.security.dto.JwtRefreshResponseDto;
-import ru.nsu.calendar.security.jwt.JwtAuthentication;
 import ru.nsu.calendar.security.jwt.JwtProvider;
 
 import java.util.NoSuchElementException;
@@ -34,7 +33,11 @@ public class AuthService {
 
         final Set<Role> userRoles = Set.of(Role.USER);
         final JwtLoginResponseDto jwtLoginResponseDto = generateJwtResponse(user, userRoles);
-        user.setRefreshToken(jwtLoginResponseDto.getRefreshToken());
+        final JwtToken jwtToken = JwtToken.builder()
+                .refreshToken(jwtLoginResponseDto.getRefreshToken())
+                .user(user)
+                .build();
+        user.getTokens().add(jwtToken);
         userRepository.save(user);
         return jwtLoginResponseDto;
     }
@@ -51,17 +54,17 @@ public class AuthService {
         final Users user = userRepository.getByUsername(username)
                 .orElseThrow(() -> new Exception("User not found: %s".formatted(username)));
 
-        if (!refreshToken.equals(user.getRefreshToken())) {
+        final boolean isJwtTokenExists = user.getTokens().stream()
+                .map(JwtToken::getRefreshToken)
+                .anyMatch(refreshToken::equals);
+
+        if (isJwtTokenExists) {
             throw new Exception("New and old refresh tokens aren`t equal");
         }
 
         final Set<Role> userRoles = Set.of(Role.USER);
         final String accessToken = jwtProvider.generateAccessToken(user.getUsername(), userRoles);
         return new JwtRefreshResponseDto(accessToken);
-    }
-
-    public @NonNull JwtAuthentication getAuthInfo() {
-        return (JwtAuthentication) SecurityContextHolder.getContext().getAuthentication();
     }
 
     private @NonNull JwtLoginResponseDto generateJwtResponse(@NonNull final Users user,
