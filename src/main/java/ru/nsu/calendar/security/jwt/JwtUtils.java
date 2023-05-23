@@ -14,10 +14,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @UtilityClass
 @Log4j2
@@ -35,15 +32,15 @@ public final class JwtUtils {
                     .parseClaimsJws(token);
             return true;
         } catch (ExpiredJwtException expEx) {
-            log.error("Token expired");
+            log.info("Token expired");
         } catch (UnsupportedJwtException unsEx) {
-            log.error("Unsupported jwt", unsEx);
+            log.warn("Unsupported jwt", unsEx);
         } catch (MalformedJwtException mjEx) {
-            log.error("Malformed jwt", mjEx);
+            log.warn("Malformed jwt", mjEx);
         } catch (SignatureException sEx) {
-            log.error("Invalid signature", sEx);
+            log.warn("Invalid signature", sEx);
         } catch (Exception e) {
-            log.error("Invalid token", e);
+            log.warn("Invalid token", e);
         }
         return false;
     }
@@ -68,10 +65,6 @@ public final class JwtUtils {
 
     private static @NonNull Set<? extends Role> getRoles(@NonNull final Claims claims) {
         ///TODO
-        final List<HashMap<String, String>> roles = claims.get("roles", List.class);
-        return roles.stream()
-                .map(hm -> hm.get("authority"))
-                .map(s -> Role.USER)
-                .collect(Collectors.toSet());
+        return Set.of(Role.USER);
     }
 }

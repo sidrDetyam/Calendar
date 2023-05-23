@@ -27,8 +27,8 @@ public class JwtProvider {
     public JwtProvider(
             @Value("${jwt.secret.access}") @NonNull String jwtAccessSecret,
             @Value("${jwt.secret.refresh}") @NonNull String jwtRefreshSecret,
-            @Value("${jwt.access-expiration}") @NonNull Integer jwtAccessExpiration,
-            @Value("${jwt.refresh-expiration}") @NonNull Integer jwtRefreshExpiration
+            @Value("${jwt.access-expiration-seconds}") @NonNull Integer jwtAccessExpiration,
+            @Value("${jwt.refresh-expiration-days}") @NonNull Integer jwtRefreshExpiration
     ) {
         this.jwtAccessSecret = Keys.hmacShaKeyFor(Decoders.BASE64.decode(jwtAccessSecret));
         this.jwtRefreshSecret = Keys.hmacShaKeyFor(Decoders.BASE64.decode(jwtRefreshSecret));

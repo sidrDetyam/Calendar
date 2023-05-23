@@ -66,7 +66,7 @@ public class AuthService {
                 .map(JwtToken::getRefreshToken)
                 .anyMatch(refreshToken::equals);
 
-        if (isJwtTokenExists) {
+        if (!isJwtTokenExists) {
             throw refreshExceptionSupplier.get();
         }
 
