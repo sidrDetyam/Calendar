@@ -3,6 +3,7 @@ package ru.nsu.calendar.security;
 import io.jsonwebtoken.Claims;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.nsu.calendar.entities.JwtToken;
@@ -23,6 +24,7 @@ import java.util.function.Supplier;
 public class AuthService {
     private final UsersRepository userRepository;
     private final JwtProvider jwtProvider;
+    private final PasswordEncoder passwordEncoder;
 
     @Transactional
     public @NonNull JwtLoginResponseDto login(@NonNull final JwtLoginRequestDto authRequest){
@@ -31,7 +33,7 @@ public class AuthService {
         final Users user = userRepository.getByUsername(authRequest.getUsername())
                 .orElseThrow(loginExceptionSupplier);
 
-        if (!user.getPassword().equals(authRequest.getPassword())) {
+        if (!passwordEncoder.matches(authRequest.getPassword(), user.getPassword())) {
             throw loginExceptionSupplier.get();
         }
 
