@@ -11,10 +11,12 @@ import ru.nsu.calendar.repository.UsersRepository;
 import ru.nsu.calendar.security.dto.JwtLoginRequestDto;
 import ru.nsu.calendar.security.dto.JwtLoginResponseDto;
 import ru.nsu.calendar.security.dto.JwtRefreshResponseDto;
+import ru.nsu.calendar.security.exceptions.LoginException;
+import ru.nsu.calendar.security.exceptions.RefreshException;
 import ru.nsu.calendar.security.jwt.JwtProvider;
 
-import java.util.NoSuchElementException;
 import java.util.Set;
+import java.util.function.Supplier;
 
 @Service
 @RequiredArgsConstructor
@@ -23,12 +25,14 @@ public class AuthService {
     private final JwtProvider jwtProvider;
 
     @Transactional
-    public @NonNull JwtLoginResponseDto login(@NonNull final JwtLoginRequestDto authRequest) throws Exception {
+    public @NonNull JwtLoginResponseDto login(@NonNull final JwtLoginRequestDto authRequest){
+        final Supplier<LoginException> loginExceptionSupplier = () -> new LoginException("Incorrect login or password");
+
         final Users user = userRepository.getByUsername(authRequest.getUsername())
-                .orElseThrow(() -> new NoSuchElementException("User not found"));
+                .orElseThrow(loginExceptionSupplier);
 
         if (!user.getPassword().equals(authRequest.getPassword())) {
-            throw new Exception("Incorrect password");
+            throw loginExceptionSupplier.get();
         }
 
         final Set<Role> userRoles = Set.of(Role.USER);
@@ -43,23 +47,25 @@ public class AuthService {
     }
 
     @Transactional(readOnly = true)
-    public @NonNull JwtRefreshResponseDto refreshAccessToken(@NonNull final String refreshToken) throws Exception {
+    public @NonNull JwtRefreshResponseDto refreshAccessToken(@NonNull final String refreshToken){
+        final Supplier<RefreshException> refreshExceptionSupplier = () -> new RefreshException("Refresh failed");
+
         if (!jwtProvider.validateRefreshToken(refreshToken)) {
-            throw new Exception("Invalid refresh token");
+            throw refreshExceptionSupplier.get();
         }
 
         final Claims claims = jwtProvider.getRefreshClaims(refreshToken);
         final String username = claims.getSubject();
 
         final Users user = userRepository.getByUsername(username)
-                .orElseThrow(() -> new Exception("User not found: %s".formatted(username)));
+                .orElseThrow(refreshExceptionSupplier);
 
         final boolean isJwtTokenExists = user.getTokens().stream()
                 .map(JwtToken::getRefreshToken)
                 .anyMatch(refreshToken::equals);
 
         if (isJwtTokenExists) {
-            throw new Exception("New and old refresh tokens aren`t equal");
+            throw refreshExceptionSupplier.get();
         }
 
         final Set<Role> userRoles = Set.of(Role.USER);

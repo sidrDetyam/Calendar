@@ -1,4 +1,4 @@
-package ru.nsu.calendar.security;
+package ru.nsu.calendar.security.config;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -9,6 +9,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import ru.nsu.calendar.security.AuthenticationEntryPoint;
 import ru.nsu.calendar.security.jwt.JwtFilter;
 
 @Configuration
