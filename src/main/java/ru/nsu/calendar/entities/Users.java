@@ -5,6 +5,8 @@ import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
 
+import java.util.Set;
+
 @Getter
 @Setter
 @Entity
@@ -18,4 +20,13 @@ public class Users {
 
     @Column(name = "telegram_token")
     private String telegramToken;
+
+    @Column(name = "username")
+    private String username;
+
+    @Column(name = "password")
+    private String password;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private Set<JwtToken> tokens;
 }
