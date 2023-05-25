@@ -1,12 +1,11 @@
 package ru.nsu.calendar.event;
 
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import ru.nsu.calendar.dto.DateDto;
 import ru.nsu.calendar.event.dto.EventDto;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/v1/event")
@@ -20,4 +19,13 @@ public class EventController {
         eventService.createEvent(eventDto);
     }
 
+    @GetMapping("/current")
+    public List<EventDto> getEventByCurrentDate() {
+        return eventService.getEventByCurrentDate();
+    }
+
+    @PostMapping("/date")
+    public List<EventDto> getEventByCurrentDate(@RequestBody DateDto dateDto) {
+        return eventService.getEventByDateDto(dateDto);
+    }
 }

@@ -39,10 +39,6 @@ public class EventService {
         return getEventDtoByLocalDate(date);
     }
 
-    public void addNotification() {
-
-    }
-
     private List<EventDto> getEventDtoByLocalDate(LocalDate date) {
         return getEventByLocalDate(date).stream()
                 .map(EventDto::from)
