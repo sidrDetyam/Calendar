@@ -20,7 +20,7 @@ public class JwtToken {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false)
-    private Users user;
+    private User user;
 
     @Column(name = "refresh_token", nullable = false)
     private String refreshToken;
