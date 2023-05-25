@@ -8,6 +8,12 @@ services:
       - "8080:8080"
     depends_on:
       - dbpostgresql
+  sonar:
+    image: sonarqube:9.9.0-community
+    ports:
+      - '9000:9000'
+    depends_on:
+      - dbpostgresql
   dbpostgresql:
     image: postgres
     ports:
@@ -16,4 +22,3 @@ services:
       - POSTGRES_PASSWORD=calendar_owner
       - POSTGRES_USER=calendar_owner
       - POSTGRES_DB=calendar
-

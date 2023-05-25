@@ -3,6 +3,8 @@ plugins {
 	id 'org.springframework.boot' version '3.0.6'
 	id 'io.spring.dependency-management' version '1.1.0'
 	id 'com.palantir.docker' version '0.24.0'
+	id("org.sonarqube") version "4.0.0.2929"
+	id 'jacoco'
 }
 
 group = 'ru.nsu'
@@ -57,4 +59,23 @@ tasks.named('test') {
 
 docker {
 	name 'calendar'
+}
+
+sonar {
+	properties {
+		property 'sonar.host.url', 'http://localhost:9000'
+		property 'sonar.login', 'admin'
+		property 'sonar.password', 'calendar_owner'
+	}
+}
+
+test {
+	finalizedBy jacocoTestReport
+}
+
+jacocoTestReport {
+	reports {
+		xml.enabled true
+	}
+	dependsOn test
 }
