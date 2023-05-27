@@ -14,4 +14,6 @@ public class GlobalControllerExceptionHandler {
     public String noSuchElement(Exception ex) {
         return "Resource not found";
     }
+
+
 }
