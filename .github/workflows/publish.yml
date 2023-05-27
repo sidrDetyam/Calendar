@@ -29,7 +29,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v4
         with:
-          images: professornik/calendar
+          images: sidrdetyam/calendar
       - name: Build and push
         uses: docker/build-push-action@v4
         with:
