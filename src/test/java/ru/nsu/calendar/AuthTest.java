@@ -5,22 +5,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import reactor.core.publisher.Mono;
-import ru.nsu.calendar.dto.DateDto;
-import ru.nsu.calendar.dto.TimeDto;
-import ru.nsu.calendar.event.dto.EventDto;
 import ru.nsu.calendar.security.dto.CredentialsDto;
 import ru.nsu.calendar.security.dto.JwtLoginResponseDto;
+import ru.nsu.calendar.security.dto.JwtRefreshRequestDto;
 import ru.nsu.calendar.utils.IntegrationTest;
 
 @IntegrationTest
-public class EventTest {
+public class AuthTest {
 
     @Autowired
     private WebTestClient webTestClient;
 
     @Test
-    void test_on_create_event() {
-
+    public void test() {
         CredentialsDto credentialsDto = new CredentialsDto("user", "password");
 
         webTestClient.post()
@@ -38,34 +35,15 @@ public class EventTest {
                 .expectBody(JwtLoginResponseDto.class)
                 .returnResult().getResponseBody();
 
-        DateDto eventDate =  new DateDto(1, 1, 2024);
-
-        EventDto eventDto = new EventDto(null,
-                "ev",
-                "descr",
-                eventDate,
-                new TimeDto(1, 1, 1),
-                1,
-                true);
+        assert tokens != null;
+        JwtRefreshRequestDto refreshRequestDto = JwtRefreshRequestDto.builder()
+                .refreshToken(tokens.getRefreshToken())
+                .build();
 
         webTestClient.post()
-                .uri("/v1/event")
-                .headers(httpHeaders -> {
-                    assert tokens != null;
-                    httpHeaders.setBearerAuth(tokens.getAccessToken());
-                })
-                .body(Mono.just(eventDto), EventDto.class)
+                .uri("/v1/auth/refresh")
+                .body(Mono.just(refreshRequestDto), JwtRefreshRequestDto.class)
                 .exchange()
                 .expectStatus().isOk();
-
-        webTestClient.post()
-                .uri("/v1/event/date")
-                .headers(httpHeaders -> {
-                    assert tokens != null;
-                    httpHeaders.setBearerAuth(tokens.getAccessToken());
-                }).body(Mono.just(eventDate), DateDto.class)
-                .exchange()
-                .expectStatus().isOk()
-                .expectBody().jsonPath("$[0].eventName").isEqualTo("ev");
     }
 }
