@@ -3,13 +3,12 @@ package ru.nsu.calendar.task;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import ru.nsu.calendar.entities.User;
 import ru.nsu.calendar.security.AuthService;
+import ru.nsu.calendar.task.dto.CreateTaskRequestDto;
 import ru.nsu.calendar.task.dto.TaskDto;
+import ru.nsu.calendar.utils.NullFieldChecker;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -30,5 +29,12 @@ public class TaskController {
         final User user = authService.getCurrentUser();
         final List<TaskDto> resultList = taskService.getTasks(user.getId(), from, to, taskName, description);
         return new ResponseEntity<>(resultList, HttpStatus.OK);
+    }
+
+    @PostMapping
+    public void create(@RequestBody CreateTaskRequestDto requestDto){
+        NullFieldChecker.check(requestDto);
+        final User user = authService.getCurrentUser();
+        taskService.createTask(user, requestDto);
     }
 }

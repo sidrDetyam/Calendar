@@ -1,13 +1,15 @@
 package ru.nsu.calendar.task;
 
 import jakarta.persistence.criteria.Expression;
-import jakarta.transaction.Transactional;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.nsu.calendar.entities.Task;
+import ru.nsu.calendar.entities.User;
 import ru.nsu.calendar.repository.TaskRepository;
+import ru.nsu.calendar.task.dto.CreateTaskRequestDto;
 import ru.nsu.calendar.task.dto.TaskDto;
 import ru.nsu.calendar.utils.JpaSpecificationUtils;
 
@@ -22,7 +24,7 @@ public class TaskService {
     private final TaskRepository taskRepository;
     private final TaskMapper taskMapper;
 
-    @Transactional
+    @Transactional(readOnly = true)
     public @NonNull List<@NonNull TaskDto> getTasks(final long userId,
                                                     final LocalDateTime from,
                                                     final LocalDateTime to,
@@ -53,6 +55,19 @@ public class TaskService {
                 .toList();
     }
 
+    @Transactional
+    public void createTask(final @NonNull User user,
+                           final @NonNull CreateTaskRequestDto requestDto){
+        final Task task = new Task();
+        task.setIsFinish(false);
+        task.setUserId(user);
+        task.setTaskName(requestDto.getTaskName());
+        task.setDescription(requestDto.getDescription());
+        task.setTaskDate(requestDto.getTaskDateTime().toLocalDate());
+        task.setCountOfRepeat(requestDto.getCountOfRepeat());
+        taskRepository.save(task);
+    }
+
     private static @NonNull Specification<Task> fromTaskSpecification(@NonNull final LocalDateTime from) {
         return (root, query, criteriaBuilder) -> {
             final Expression<LocalDate> taskEndDate = criteriaBuilder
@@ -67,4 +82,6 @@ public class TaskService {
         return (root, query, criteriaBuilder) ->
                 criteriaBuilder.lessThanOrEqualTo(root.get("taskDate"), to.toLocalDate());
     }
+
+
 }
