@@ -3,7 +3,7 @@ package ru.nsu.calendar.security;
 import io.jsonwebtoken.Claims;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.Authentication;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -12,12 +12,12 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.nsu.calendar.entities.JwtToken;
 import ru.nsu.calendar.entities.User;
 import ru.nsu.calendar.repository.UserRepository;
-import ru.nsu.calendar.security.dto.JwtLoginRequestDto;
+import ru.nsu.calendar.security.dto.CredentialsDto;
 import ru.nsu.calendar.security.dto.JwtLoginResponseDto;
 import ru.nsu.calendar.security.dto.JwtRefreshResponseDto;
 import ru.nsu.calendar.security.exceptions.LoginException;
 import ru.nsu.calendar.security.exceptions.RefreshException;
-import ru.nsu.calendar.security.jwt.JwtAuthentication;
+import ru.nsu.calendar.security.exceptions.SignUpException;
 import ru.nsu.calendar.security.jwt.JwtProvider;
 
 import java.util.Set;
@@ -31,13 +31,13 @@ public class AuthService implements UserService {
     private final PasswordEncoder passwordEncoder;
 
     @Transactional
-    public @NonNull JwtLoginResponseDto login(@NonNull final JwtLoginRequestDto authRequest) {
+    public @NonNull JwtLoginResponseDto login(@NonNull final CredentialsDto authRequest) {
         final Supplier<LoginException> loginExceptionSupplier = () -> new LoginException("Incorrect login or password");
 
-        final User user = userRepository.getByUsername(authRequest.getUsername())
+        final User user = userRepository.getByUsername(authRequest.username())
                 .orElseThrow(loginExceptionSupplier);
 
-        if (!passwordEncoder.matches(authRequest.getPassword(), user.getPassword())) {
+        if (!passwordEncoder.matches(authRequest.password(), user.getPassword())) {
             throw loginExceptionSupplier.get();
         }
 
@@ -92,4 +92,23 @@ public class AuthService implements UserService {
         return userRepository.getByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User with username: " + username + "not found"));
     }
+
+    public void singUp(CredentialsDto credentials) {
+        if(userRepository.getByUsername(credentials.username()).isPresent()) {
+            throw new SignUpException(String.format("User with username %s already exists", credentials.username()));
+        }
+
+        User user = createUser(credentials);
+        userRepository.save(user);
+    }
+
+    @NotNull
+    private User createUser(CredentialsDto credentials) {
+        User user = new User();
+        user.setUsername(credentials.username());
+        user.setPassword(passwordEncoder.encode(credentials.password()));
+        return user;
+    }
+
+
 }

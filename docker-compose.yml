@@ -7,9 +7,15 @@ services:
     ports:
       - "8080:8080"
     depends_on:
-      - dbpostgresql
-  dbpostgresql:
-    image: postgres
+      - db
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://dbpostgresql:5432/calendar
+      - SPRING_DATASOURCE_USERNAME=calendar_owner
+      - SPRING_DATASOURCE_PASSWORD=calendar_owner
+
+  db:
+    image: 'postgres:15.2'
+    container_name: db
     ports:
       - "5432:5432"
     environment:
