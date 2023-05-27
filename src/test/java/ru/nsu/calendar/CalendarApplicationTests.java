@@ -1,9 +1,9 @@
 package ru.nsu.calendar;
 
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
+import ru.nsu.calendar.utils.IntegrationTest;
 
-@SpringBootTest
+@IntegrationTest
 class CalendarApplicationTests {
 
 	@Test

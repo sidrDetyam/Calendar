@@ -1,8 +1,8 @@
 package ru.nsu.calendar.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 
 import java.time.LocalDate;
@@ -11,6 +11,9 @@ import java.time.LocalTime;
 @Getter
 @Setter
 @Entity
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "event")
 public class Event {
     @Id
@@ -21,7 +24,8 @@ public class Event {
 
     @ManyToOne
     @JoinColumn(name = "user_id")
-    private Users userId;
+    @JsonIgnore
+    private User user;
 
     @Column(name = "event_name")
     private String eventName;
@@ -36,8 +40,9 @@ public class Event {
     private LocalTime eventTime;
 
     @Column(name = "count_of_repeat")
-    private Short countOfRepeat;
+    private Integer countOfRepeat;
 
     @Column(name = "is_finish")
     private Boolean isFinish;
+
 }

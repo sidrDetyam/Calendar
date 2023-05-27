@@ -30,9 +30,9 @@ public class Notification {
 
     @ManyToOne
     @JoinColumn(name = "task_id")
-    private Task taskId;
+    private Task task;
 
     @ManyToOne
     @JoinColumn(name = "event_id")
-    private Event eventId;
+    private Event event;
 }

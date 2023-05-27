@@ -20,7 +20,7 @@ public class Task {
 
     @ManyToOne
     @JoinColumn(name = "user_id")
-    private Users userId;
+    private User userId;
 
     @Column(name = "task_name")
     private String taskName;
