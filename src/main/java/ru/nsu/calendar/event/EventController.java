@@ -28,4 +28,14 @@ public class EventController {
     public List<EventDto> getEventByCurrentDate(@RequestBody DateDto dateDto) {
         return eventService.getEventByDateDto(dateDto);
     }
+
+    @PutMapping
+    public void updateEvent(@RequestBody EventDto eventDto) {
+        eventService.updateEvent(eventDto);
+    }
+
+    @DeleteMapping
+    public void deleteEvent(@RequestParam Long id) {
+        eventService.deleteEvent(id);
+    }
 }

@@ -1,11 +1,11 @@
-name: Build
+name: Deploy
 on:
   workflow_dispatch:
   push:
     branches:
       - master
 jobs:
-  test:
+  publish-on-docker-hub:
     runs-on: ubuntu-latest
     steps:
       - name: Get repository code

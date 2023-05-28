@@ -24,6 +24,7 @@ public class SecurityExceptionHandler {
     }
 
     @ExceptionHandler(value = {SignUpException.class})
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
     public @NonNull String singUpFail(@NonNull SignUpException ex) {
         return ex.getMessage();
     }
