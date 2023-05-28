@@ -40,7 +40,7 @@ public class TaskController {
         taskService.createTask(user, requestDto);
     }
 
-    @PutMapping("edit")
+    @PutMapping
     public void edit(@RequestBody final EditTaskRequestDto requestDto){
         NullFieldChecker.check(requestDto);
         final User user = authService.getCurrentUser();
