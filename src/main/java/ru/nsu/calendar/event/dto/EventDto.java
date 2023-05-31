@@ -10,7 +10,6 @@ public record EventDto(Long id,
                        String description,
                        DateDto dateDto,
                        TimeDto timeDto,
-                       Integer countOfRepeat,
                        Boolean isFinish) {
 
     public static EventDto from(Event event) {
@@ -20,7 +19,6 @@ public record EventDto(Long id,
                 event.getDescription(),
                 DateDto.from(event.getEventDate()),
                 TimeDto.from(event.getEventTime()),
-                event.getCountOfRepeat(),
                 event.getIsFinish()
         );
     }
@@ -34,7 +32,14 @@ public record EventDto(Long id,
                 .description(description)
                 .eventName(eventName)
                 .isFinish(isFinish)
-                .countOfRepeat(countOfRepeat)
                 .build();
+    }
+
+    public void updateEvent(Event event) {
+        event.setEventDate(dateDto.toLocalDate());
+        event.setEventTime(timeDto.toLocalTime());
+        event.setDescription(description);
+        event.setEventName(eventName);
+        event.setIsFinish(isFinish);
     }
 }

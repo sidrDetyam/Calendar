@@ -12,6 +12,7 @@ import java.time.LocalDate;
 @Entity
 @Table(name = "task")
 public class Task {
+
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "pet_seq")

@@ -14,5 +14,4 @@ public class AuthenticationEntryPoint implements org.springframework.security.we
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException {
         response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized");
     }
-
 }

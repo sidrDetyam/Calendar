@@ -4,7 +4,7 @@ on:
   pull_request:
     types: [opened, synchronize, reopened, edited]
 jobs:
-  test:
+  test-build:
     runs-on: ubuntu-latest
     steps:
       - name: Get repository code

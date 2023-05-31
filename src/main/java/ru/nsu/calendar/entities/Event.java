@@ -16,6 +16,7 @@ import java.time.LocalTime;
 @AllArgsConstructor
 @Table(name = "event")
 public class Event {
+
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "pet_seq")
@@ -39,10 +40,6 @@ public class Event {
     @Column(name = "event_time")
     private LocalTime eventTime;
 
-    @Column(name = "count_of_repeat")
-    private Integer countOfRepeat;
-
     @Column(name = "is_finish")
     private Boolean isFinish;
-
 }
